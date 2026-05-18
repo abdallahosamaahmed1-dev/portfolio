@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdallah Osama — Data Analyst Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #ffffff0f;
+    --accent: #4f8ef7;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --text: #f0f0f5;
+    --muted: #8888a0;
+    --card-bg: #13131e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* GLOW BLOBS */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.07;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 100px; right: -100px; }
+
+  /* LAYOUT */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* NAV */
+  nav {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: #0a0a0fcc;
+    backdrop-filter: blur(16px);
+    z-index: 100;
+  }
+  nav .container { display: flex; justify-content: space-between; align-items: center; }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    padding: 100px 0 80px;
+    position: relative;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 28px;
+    font-weight: 500;
+  }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--accent3); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  h1 .highlight {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+
+  .hero-links { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #3a7de8; transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+  /* SKILLS STRIP */
+  .skills-strip {
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 60px 0;
+    overflow: hidden;
+  }
+  .skills-scroll {
+    display: flex;
+    gap: 12px;
+    animation: scroll 30s linear infinite;
+    width: max-content;
+  }
+  @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .skill-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .skill-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+  /* SECTION HEADERS */
+  .section { padding: 60px 0; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+  }
+
+  /* PROJECT CARDS */
+  .projects-grid { display: flex; flex-direction: column; gap: 24px; }
+
+  .project-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    transition: border-color 0.3s, transform 0.3s;
+    min-height: 280px;
+  }
+  .project-card:hover { border-color: #ffffff22; transform: translateY(-2px); }
+  .project-card.reverse { direction: rtl; }
+  .project-card.reverse > * { direction: ltr; }
+
+  .project-img {
+    overflow: hidden;
+    position: relative;
+    background: var(--surface2);
+  }
+  .project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    transition: opacity 0.3s, transform 0.4s;
+  }
+  .project-card:hover .project-img img { opacity: 1; transform: scale(1.03); }
+
+  /* For cards with multiple screenshots, show a grid */
+  .project-img-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+  }
+  .project-img-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-content {
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .project-number {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .project-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .tool-tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .tool-tag.highlight { border-color: #4f8ef733; color: var(--accent); background: #4f8ef710; }
+
+  /* PLACEHOLDER for missing images */
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* EXPERIENCE */
+  .exp-grid { display: flex; flex-direction: column; gap: 20px; }
+  .exp-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .exp-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .exp-body { flex: 1; }
+  .exp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .exp-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+  .exp-date { font-size: 12px; color: var(--muted); background: var(--surface2); padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border); }
+  .exp-company { font-size: 13px; color: var(--accent); margin-bottom: 10px; font-weight: 500; }
+  .exp-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .exp-badge {
+    display: inline-block;
+    background: #34d39915;
+    border: 1px solid #34d39930;
+    color: var(--accent3);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  /* CERTS */
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .cert-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: border-color 0.2s;
+  }
+  .cert-card:hover { border-color: #4f8ef733; }
+  .cert-icon { font-size: 22px; margin-bottom: 10px; }
+  .cert-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .cert-issuer { font-size: 12px; color: var(--muted); }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 56px;
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-section::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #4f8ef720, transparent 70%);
+    pointer-events: none;
+  }
+  .contact-title { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+  .contact-sub { color: var(--muted); margin-bottom: 32px; font-size: 16px; }
+  .contact-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ADD PROJECT BUTTON */
+  .add-project-card {
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 100px;
+  }
+  .add-project-card:hover { border-color: var(--accent); color: var(--accent); background: #4f8ef708; }
+  .add-icon { font-size: 24px; }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 0; transform: translateY(24px); animation: fadeIn 0.6s ease forwards; }
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  @media(max-width: 720px) {
+    .project-card { grid-template-columns: 1fr; }
+    .project-card.reverse { direction: ltr; }
+    .project-img { min-height: 200px; }
+    .contact-section { padding: 32px 20px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-logo">Abdallah Osama<span>.</span></div>
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#certifications">Certifications</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="container">
+  <section class="hero">
+    <div class="hero-tag fade-in">Available for opportunities</div>
+    <h1 class="fade-in delay-1">Data Analyst<br><span class="highlight">& BI Specialist</span></h1>
+    <p class="hero-sub fade-in delay-2">
+      Turning raw data into actionable insights. Specialized in Power BI, SQL, Python, and AI-powered automation workflows.
+    </p>
+    <div class="hero-links fade-in delay-3">
+      <a href="https://www.linkedin.com/in/abdallah-osama11/" target="_blank" class="btn btn-primary">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        LinkedIn Profile
+      </a>
+      <a href="mailto:abdallahosamaahmed1@gmail.com" class="btn btn-outline">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        Get in Touch
+      </a>
+    </div>
+  </section>
+</div>
+
+<!-- SKILLS STRIP -->
+<div class="skills-strip">
+  <div class="skills-scroll">
+    <!-- Set 1 -->
+    <span class="skill-pill"><span class="dot"></span>Power BI</span>
+    <span class="skill-pill"><span class="dot"></span>SQL</span>
+    <span class="skill-pill"><span class="dot"></span>Python</span>
+    <span class="skill-pill"><span class="dot"></span>Power Query</span>
+    <span class="skill-pill"><span class="dot"></span>Google Sheets</span>
+    <span class="skill-pill"><span class="dot"></span>Data Modeling</span>
+    <span class="skill-pill"><span class="dot"></span>n8n Automation</span>
+    <span class="skill-pill"><span class="dot"></span>RFM Analysis</span>
+    <span class="skill-pill"><span class="dot"></span>DAX</span>
+    <span class="skill-pill"><span class="dot"></span>Excel</span>
+    <span class="skill-pill"><span class="dot"></span>Google Gemini AI</span>
+    <span class="skill-pill"><span class="dot"></span>Data Visualization</span>
+    <span class="skill-pill"><span class="dot"></span>KPI Dashboards</span>
+    <span class="skill-pill"><span class="dot"></span>Business Intelligence</span>
+    <!-- Set 2 (duplicate for infinite scroll) -->
+    <span class="skill-pill"><span class="dot"></span>Power BI</span>
+    <span class="skill-pill"><span class="dot"></span>SQL</span>
+    <span class="skill-pill"><span class="dot"></span>Python</span>
+    <span class="skill-pill"><span class="dot"></span>Power Query</span>
+    <span class="skill-pill"><span class="dot"></span>Google Sheets</span>
+    <span class="skill-pill"><span class="dot"></span>Data Modeling</span>
+    <span class="skill-pill"><span class="dot"></span>n8n Automation</span>
+    <span class="skill-pill"><span class="dot"></span>RFM Analysis</span>
+    <span class="skill-pill"><span class="dot"></span>DAX</span>
+    <span class="skill-pill"><span class="dot"></span>Excel</span>
+    <span class="skill-pill"><span class="dot"></span>Google Gemini AI</span>
+    <span class="skill-pill"><span class="dot"></span>Data Visualization</span>
+    <span class="skill-pill"><span class="dot"></span>KPI Dashboards</span>
+    <span class="skill-pill"><span class="dot"></span>Business Intelligence</span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="container">
+  <section class="section" id="projects">
+    <p class="section-label">Portfolio</p>
+    <h2 class="section-title">Featured Projects</h2>
+
+    <div class="projects-grid">
+
+      <!-- PROJECT 1: Customer Segmentation -->
+      <div class="project-card fade-in">
+        <div class="project-img">
+          <div class="project-img-grid">
+            <img src="Screenshot_2026-05-18_211337.png" alt="Customer Segmentation Overview">
+            <img src="Screenshot_2026-05-18_211354.png" alt="Customer Segments">
+            <img src="Screenshot_2026-05-18_211409.png" alt="Revenue Page">
+            <img src="Screenshot_2026-05-18_211426.png" alt="Customer Detail">
+          </div>
+        </div>
+        <div class="project-content">
+          <p class="project-number">Project 01</p>
+          <h3 class="project-title">Customer Segmentation Dashboard</h3>
+          <p class="project-desc">
+            RFM Analysis on 220 customers divided into 5 segments (VIP, Loyal, At Risk, New, Lost). VIP customers represent only 14% but drive 41% of total revenue ($743K).
+          </p>
+          <div class="project-tools">
+            <span class="tool-tag highlight">Power BI</span>
+            <span class="tool-tag">Google Sheets</span>
+            <span class="tool-tag">Power Query</span>
+            <span class="tool-tag">RFM Analysis</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 2: AI Sales Pipeline -->
+      <div class="project-card reverse fade-in delay-1">
+        <div class="project-img">
+          <div class="project-img-grid">
+            <img src="1779130883266_image.png" alt="n8n Workflow" style="grid-column:span 2">
+          </div>
+        </div>
+        <div class="project-content">
+          <p class="project-number">Project 02</p>
+          <h3 class="project-title">AI-Powered Sales Analytics Pipeline</h3>
+          <p class="project-desc">
+            End-to-end automated pipeline that pulls sales data, cleans it, calculates KPIs, generates AI business insights using Google Gemini, and sends automated email reports — reducing analysis time from hours to seconds.
+          </p>
+          <div class="project-tools">
+            <span class="tool-tag highlight">n8n</span>
+            <span class="tool-tag highlight">Google Gemini AI</span>
+            <span class="tool-tag">Python</span>
+            <span class="tool-tag">Google Sheets</span>
+            <span class="tool-tag">Gmail API</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 3: Udemy -->
+      <div class="project-card fade-in delay-2">
+        <div class="project-img">
+          <div class="project-img-grid">
+            <img src="1779130938613_image.png" alt="Udemy Home">
+            <img src="1779130891725_image.png" alt="n8n Email">
+            <img src="1779130945057_image.png" alt="Udemy Overview">
+            <img src="1779130952485_image.png" alt="Udemy Price Analysis">
+          </div>
+        </div>
+        <div class="project-content">
+          <p class="project-number">Project 03</p>
+          <h3 class="project-title">Udemy Courses Analysis Dashboard</h3>
+          <p class="project-desc">
+            Analysis of 4K courses, 12M subscribers, and 574K reviews. Reveals how pricing, category, and payment type impact enrollment. Web Development dominates with 7.9M subscribers.
+          </p>
+          <div class="project-tools">
+            <span class="tool-tag highlight">Power BI</span>
+            <span class="tool-tag">Power Query</span>
+            <span class="tool-tag">Kaggle</span>
+            <span class="tool-tag">Data Storytelling</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 4: HR Analytics -->
+      <div class="project-card reverse fade-in delay-3">
+        <div class="project-img">
+          <img src="Screenshot_2026-05-18_214641.png" alt="HR Analytics Dashboard">
+        </div>
+        <div class="project-content">
+          <p class="project-number">Project 04</p>
+          <h3 class="project-title">HR Analytics Dashboard</h3>
+          <p class="project-desc">
+            Comprehensive HR dashboard covering 1,766 employees across 15 departments. Tracks salary, sick days, hiring trends, headcount by city, and education distribution with full gender and marital status filtering.
+          </p>
+          <div class="project-tools">
+            <span class="tool-tag highlight">Power BI</span>
+            <span class="tool-tag">Power Query</span>
+            <span class="tool-tag">Excel</span>
+            <span class="tool-tag">Kaggle</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 5: Sales Report 2020 -->
+      <div class="project-card fade-in delay-4">
+        <div class="project-img">
+          <img src="Screenshot_2026-05-18_214924.png" alt="Sales Report 2020">
+        </div>
+        <div class="project-content">
+          <p class="project-number">Project 05</p>
+          <h3 class="project-title">Sales Report 2020</h3>
+          <p class="project-desc">
+            Multi-branch sales analysis across 5 countries with $1B total revenue. Tracks quarterly performance (Q1–Q4), product category breakdown (Electronics 95%), and sales trends by month comparing 2019 vs 2020.
+          </p>
+          <div class="project-tools">
+            <span class="tool-tag highlight">Power BI</span>
+            <span class="tool-tag">Power Query</span>
+            <span class="tool-tag">Excel</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD NEW PROJECT CARD -->
+      <div class="add-project-card" onclick="alert('To add a new project, duplicate one of the project card blocks in the HTML and update the title, description, tools, and image paths.')">
+        <span class="add-icon">＋</span>
+        <span>Add New Project</span>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- EXPERIENCE -->
+  <section class="section" id="experience">
+    <p class="section-label">Background</p>
+    <h2 class="section-title">Work Experience</h2>
+    <div class="exp-grid">
+
+      <div class="exp-card fade-in">
+        <div class="exp-icon">📊</div>
+        <div class="exp-body">
+          <div class="exp-header">
+            <div class="exp-title">Data Collector & Vice Team Leader</div>
+            <span class="exp-date">Sep 2022 – Feb 2025</span>
+          </div>
+          <div class="exp-company">Hudl StatsBomb — Cairo, Egypt</div>
+          <p class="exp-desc">
+            Analyzed American football matches to evaluate performance, tactics, and key metrics. Trained and onboarded new employees, supported team management as Vice Team Leader, and tested newly introduced processes before full implementation.
+          </p>
+          <span class="exp-badge">🏆 Top Achiever — 4 Quarters | Highest Performance Rating 2023</span>
+        </div>
+      </div>
+
+      <div class="exp-card fade-in delay-1">
+        <div class="exp-icon">💻</div>
+        <div class="exp-body">
+          <div class="exp-header">
+            <div class="exp-title">Summer Hackathon Participant</div>
+            <span class="exp-date">Aug – Sep 2022</span>
+          </div>
+          <div class="exp-company">NTG Clarity (NTG Apps) — Cairo, Egypt</div>
+          <p class="exp-desc">
+            Built a Training Management System using a low-code/no-code platform. Developed applications, databases, and data visualizations. Delivered a final project tracking employee training progress, attendance, and performance.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CERTIFICATIONS -->
+  <section class="section" id="certifications">
+    <p class="section-label">Learning</p>
+    <h2 class="section-title">Certifications & Courses</h2>
+    <div class="certs-grid">
+      <div class="cert-card">
+        <div class="cert-icon">🎓</div>
+        <div class="cert-name">Associate Data Analyst in SQL</div>
+        <div class="cert-issuer">DataCamp</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🗄️</div>
+        <div class="cert-name">Data Warehousing Concepts</div>
+        <div class="cert-issuer">DataCamp</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">📈</div>
+        <div class="cert-name">Data Analysis</div>
+        <div class="cert-issuer">GDSC</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🌐</div>
+        <div class="cert-name">Web Development</div>
+        <div class="cert-issuer">FWD</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">📣</div>
+        <div class="cert-name">Digital Marketing</div>
+        <div class="cert-issuer">FWD</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">⚡</div>
+        <div class="cert-name">Power BI</div>
+        <div class="cert-issuer">Course</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🐍</div>
+        <div class="cert-name">Python for Data Analysis</div>
+        <div class="cert-issuer">Course</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">📊</div>
+        <div class="cert-name">Excel for Data Analysis</div>
+        <div class="cert-issuer">Course</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" style="margin-bottom:60px">
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-section fade-in">
+      <h2 class="contact-title">Let's Work Together</h2>
+      <p class="contact-sub">Open to Data Analyst & BI Analyst opportunities</p>
+      <div class="contact-links">
+        <a href="mailto:abdallahosamaahmed1@gmail.com" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+          abdallahosamaahmed1@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/abdallah-osama11/" target="_blank" class="btn btn-outline">
+          LinkedIn
+        </a>
+        <a href="tel:01156527407" class="btn btn-outline">
+          📞 01156527407
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <p>© 2026 Abdallah Osama — Data Analyst Portfolio</p>
+</footer>
+
+</body>
+</html>
